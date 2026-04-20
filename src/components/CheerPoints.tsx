@@ -4,9 +4,10 @@ import { addMinsToTime, fmtElapsed } from '@/lib/utils'
 interface Props {
   startTime: string
   minPerMile: number
+  isRaceStarted: boolean
 }
 
-export default function CheerPoints({ startTime, minPerMile }: Props) {
+export default function CheerPoints({ startTime, minPerMile, isRaceStarted }: Props) {
   return (
     <div className="cheer-section">
       <h2 className="section-title">Cheer Points</h2>
@@ -25,10 +26,14 @@ export default function CheerPoints({ startTime, minPerMile }: Props) {
               <h3 className="cheer-name">{cp.name}</h3>
               <p className="cheer-location">📍 {cp.location}</p>
               <p className="cheer-desc">{cp.description}</p>
-              <div className="cheer-arrival">
-                <span className="arrival-time">{arrivalTime}</span>
-                <span className="arrival-elapsed">({fmtElapsed(elapsedMins)} from start)</span>
-              </div>
+              {isRaceStarted ? (
+                <div className="cheer-arrival">
+                  <span className="arrival-time">{arrivalTime}</span>
+                  <span className="arrival-elapsed">({fmtElapsed(elapsedMins)} from start)</span>
+                </div>
+              ) : (
+                <p className="cheer-waiting">Waiting for race start…</p>
+              )}
             </div>
           )
         })}

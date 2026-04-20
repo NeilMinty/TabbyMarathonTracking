@@ -1,65 +1,67 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { PATH_WAYPOINTS } from '@/lib/routeData'
+import { ROUTE_GPS } from '@/lib/routeData'
 import { getCurrentMile, interpolatePos } from '@/lib/utils'
 
-const W = 560
-const H = 260
+const W = 800
+const H = 380
+
+// ── Mercator-style projection onto the SVG viewBox ──────────────────────────
+const _lats = ROUTE_GPS.map(p => p[0])
+const _lngs = ROUTE_GPS.map(p => p[1])
+const MIN_LAT = Math.min(..._lats)
+const MAX_LAT = Math.max(..._lats)
+const MIN_LNG = Math.min(..._lngs)
+const MAX_LNG = Math.max(..._lngs)
+
+function project(lat: number, lng: number): { x: number; y: number } {
+  return {
+    x: (lng - MIN_LNG) / (MAX_LNG - MIN_LNG) * 780 + 10,
+    y: (1 - (lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * 360 + 10,
+  }
+}
+
+// Pre-compute projected points
+const PROJECTED = ROUTE_GPS.map(([lat, lng]) => project(lat, lng))
+const POINTS_STR = PROJECTED.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
+
+// Total polyline length for strokeDasharray
+const TOTAL_LEN = PROJECTED.reduce((sum, p, i) => {
+  if (i === 0) return 0
+  const dx = p.x - PROJECTED[i - 1].x
+  const dy = p.y - PROJECTED[i - 1].y
+  return sum + Math.sqrt(dx * dx + dy * dy)
+}, 0)
+
+// Named landmark positions
+const PT_START  = PROJECTED[0]
+const PT_CP1    = PROJECTED[12]   // mile 11 – Rotherhithe
+const PT_CP2    = PROJECTED[30]   // mile 25 – Embankment
+const PT_FINISH = PROJECTED[33]   // The Mall
+
+// ────────────────────────────────────────────────────────────────────────────
 
 interface Props {
   startTime: string
   targetHours: number
+  isRaceStarted?: boolean
 }
 
-function buildPathD(): string {
-  const pts = PATH_WAYPOINTS.map((p) => ({
-    px: p.x * W,
-    py: p.y * H,
-  }))
-  return pts
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.px.toFixed(1)} ${p.py.toFixed(1)}`)
-    .join(' ')
-}
-
-const PATH_D = buildPathD()
-
-// Approximate path length for stroke-dasharray (rough estimate based on waypoints)
-function approxPathLength(): number {
-  let len = 0
-  for (let i = 1; i < PATH_WAYPOINTS.length; i++) {
-    const dx = (PATH_WAYPOINTS[i].x - PATH_WAYPOINTS[i - 1].x) * W
-    const dy = (PATH_WAYPOINTS[i].y - PATH_WAYPOINTS[i - 1].y) * H
-    len += Math.sqrt(dx * dx + dy * dy)
-  }
-  return len
-}
-
-const TOTAL_PATH_LEN = approxPathLength()
-
-export default function CourseMap({ startTime, targetHours }: Props) {
+export default function CourseMap({ startTime, targetHours, isRaceStarted = false }: Props) {
   const [mile, setMile] = useState(0)
 
   useEffect(() => {
     function update() {
-      setMile(getCurrentMile(startTime, targetHours))
+      setMile(isRaceStarted ? getCurrentMile(startTime, targetHours) : 0)
     }
     update()
     const id = setInterval(update, 30_000)
     return () => clearInterval(id)
-  }, [startTime, targetHours])
+  }, [startTime, targetHours, isRaceStarted])
 
   const pos = interpolatePos(mile)
-  const px = pos.x * W
-  const py = pos.y * H
-
-  const progress = Math.min(mile / 26.2, 1)
-  const dashOffset = TOTAL_PATH_LEN * (1 - progress)
-
-  // Cheer point pixel positions
-  const cp1 = { cx: PATH_WAYPOINTS[5].x * W, cy: PATH_WAYPOINTS[5].y * H } // mile 11
-  const cp2 = { cx: PATH_WAYPOINTS[14].x * W, cy: PATH_WAYPOINTS[14].y * H } // mile 25
-  const finish = { cx: PATH_WAYPOINTS[PATH_WAYPOINTS.length - 1].x * W, cy: PATH_WAYPOINTS[PATH_WAYPOINTS.length - 1].y * H }
+  const dashOffset = TOTAL_LEN * (1 - Math.min(mile / 26.2, 1))
 
   return (
     <div className="map-section">
@@ -72,79 +74,106 @@ export default function CourseMap({ startTime, targetHours }: Props) {
           aria-label="London Marathon course map"
         >
           {/* Background */}
-          <rect width={W} height={H} fill="#ddeeff" rx="12" />
+          <rect width={W} height={H} fill="#e8f2f8" rx="12" />
 
-          {/* Thames waterway shape */}
-          <path
-            d={`M 0 ${H * 0.72} Q ${W * 0.15} ${H * 0.78} ${W * 0.3} ${H * 0.74} Q ${W * 0.45} ${H * 0.70} ${W * 0.55} ${H * 0.76} Q ${W * 0.7} ${H * 0.82} ${W} ${H * 0.78} L ${W} ${H} L 0 ${H} Z`}
-            fill="#a8d4f5"
-            opacity="0.5"
-          />
-
-          {/* Ghost route */}
-          <path
-            d={PATH_D}
+          {/* Ghost route – full distance, low opacity */}
+          <polyline
+            points={POINTS_STR}
             fill="none"
             stroke="#4a90d9"
             strokeWidth="3"
-            strokeOpacity="0.25"
+            strokeOpacity="0.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
 
-          {/* Progress route */}
-          <path
-            d={PATH_D}
+          {/* Progress route – pink, revealed by strokeDashoffset */}
+          <polyline
+            points={POINTS_STR}
             fill="none"
             stroke="#D6246E"
             strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeDasharray={TOTAL_PATH_LEN}
+            strokeDasharray={TOTAL_LEN}
             strokeDashoffset={dashOffset}
             style={{ transition: 'stroke-dashoffset 1s ease' }}
           />
 
-          {/* Cheer point 1 – mile 11 */}
-          <circle cx={cp1.cx} cy={cp1.cy} r={7} fill="#D6246E" opacity="0.9" />
-          <text x={cp1.cx + 9} y={cp1.cy + 4} fontSize="9" fill="#D6246E" fontWeight="bold">🫁 M11</text>
+          {/* Cheer point 1 – mile 11 Rotherhithe */}
+          <circle cx={PT_CP1.x} cy={PT_CP1.y} r={7} fill="#D6246E" opacity="0.95" />
+          <text
+            x={PT_CP1.x + 11}
+            y={PT_CP1.y + 4}
+            fontSize="9"
+            fill="#D6246E"
+            fontWeight="bold"
+          >🫁 M11</text>
 
-          {/* Cheer point 2 – mile 25 */}
-          <circle cx={cp2.cx} cy={cp2.cy} r={7} fill="#D6246E" opacity="0.9" />
-          <text x={cp2.cx + 9} y={cp2.cy + 4} fontSize="9" fill="#D6246E" fontWeight="bold">🫁 M25</text>
+          {/* Cheer point 2 – mile 25 Embankment */}
+          <circle cx={PT_CP2.x} cy={PT_CP2.y} r={7} fill="#D6246E" opacity="0.95" />
+          <text
+            x={PT_CP2.x + 11}
+            y={PT_CP2.y - 4}
+            fontSize="9"
+            fill="#D6246E"
+            fontWeight="bold"
+          >🫁 M25</text>
 
-          {/* Finish */}
+          {/* Finish – The Mall */}
           <rect
-            x={finish.cx - 16}
-            y={finish.cy - 8}
-            width={32}
-            height={16}
+            x={PT_FINISH.x + 4}
+            y={PT_FINISH.y - 9}
+            width={42}
+            height={18}
             rx="3"
             fill="#00857A"
-            opacity="0.9"
+            opacity="0.95"
           />
-          <text x={finish.cx} y={finish.cy + 4} fontSize="8" fill="white" textAnchor="middle" fontWeight="bold">FINISH</text>
+          <text
+            x={PT_FINISH.x + 25}
+            y={PT_FINISH.y + 5}
+            fontSize="8"
+            fill="white"
+            textAnchor="middle"
+            fontWeight="bold"
+          >FINISH</text>
 
           {/* Start label */}
-          <text x={PATH_WAYPOINTS[0].x * W} y={PATH_WAYPOINTS[0].y * H - 10} fontSize="8" fill="#1a2535" textAnchor="middle">START</text>
+          <text
+            x={PT_START.x}
+            y={PT_START.y - 12}
+            fontSize="8"
+            fill="#1a2535"
+            textAnchor="middle"
+          >START</text>
 
-          {/* Tabby avatar */}
+          {/* Drop-shadow filter for avatar */}
           <defs>
-            <filter id="avatar-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.3" />
+            <filter id="avatar-shadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.35" />
             </filter>
           </defs>
+
+          {/* Tabby avatar – natural Memoji shape, no border-radius */}
           <image
-            href="/tabby.jpg"
-            x={px - 16}
-            y={py - 40}
+            href="/tabby.png"
+            x={pos.x - 16}
+            y={pos.y - 44}
             width={32}
             height={32}
             preserveAspectRatio="xMidYMid meet"
             filter="url(#avatar-shadow)"
           />
-          <line x1={px} y1={py - 8} x2={px} y2={py} stroke="#D6246E" strokeWidth="1.5" />
-          <circle cx={px} cy={py} r={3} fill="#D6246E" />
+          <line
+            x1={pos.x}
+            y1={pos.y - 12}
+            x2={pos.x}
+            y2={pos.y}
+            stroke="#D6246E"
+            strokeWidth="1.5"
+          />
+          <circle cx={pos.x} cy={pos.y} r={3} fill="#D6246E" />
         </svg>
 
         <div className="map-legend">

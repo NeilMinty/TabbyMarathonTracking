@@ -51,9 +51,7 @@ html, body {
 .header-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  border: 2px solid var(--pink);
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
@@ -536,4 +534,111 @@ html, body {
   color: #94a3b8;
   line-height: 1.6;
   padding: 0 8px;
+}
+
+/* ── Countdown card ── */
+.countdown-card {
+  background: linear-gradient(135deg, #0f2044 0%, #1a3a6e 100%);
+  border-radius: 16px;
+  border: 1px solid #1e3a5f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.countdown-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.countdown-values {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.countdown-num {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: white;
+  line-height: 1;
+  min-width: 2.5ch;
+  text-align: center;
+}
+
+.countdown-lbl {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.countdown-sep {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: rgba(255,255,255,0.4);
+  line-height: 1;
+  padding-bottom: 18px;
+}
+
+/* ── Start Race / Reset ── */
+.start-race-section {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-start-race {
+  flex: 1;
+  background: var(--pink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(214,36,110,0.3);
+  transition: background 0.15s;
+}
+
+.btn-start-race:hover {
+  background: #b01a58;
+}
+
+.btn-reset {
+  background: white;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-reset:hover {
+  background: #f8fafc;
+}
+
+/* ── Cheer waiting state ── */
+.cheer-waiting {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #f1e8ef;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-style: italic;
 }

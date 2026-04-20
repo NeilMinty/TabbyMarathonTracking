@@ -1,4 +1,4 @@
-import { PATH_WAYPOINTS } from './routeData'
+import { ROUTE_GPS } from './routeData'
 
 export interface WeatherData {
   icon: string
@@ -44,25 +44,32 @@ export function nowMins(): number {
   return now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60
 }
 
-// Interpolate x/y position on course for a given mile, using PATH_WAYPOINTS
+// Projection constants derived from ROUTE_GPS for 800×380 viewBox
+const _lats = ROUTE_GPS.map(p => p[0])
+const _lngs = ROUTE_GPS.map(p => p[1])
+const _minLat = Math.min(..._lats)
+const _maxLat = Math.max(..._lats)
+const _minLng = Math.min(..._lngs)
+const _maxLng = Math.max(..._lngs)
+
+function _project(lat: number, lng: number): { x: number; y: number } {
+  return {
+    x: (lng - _minLng) / (_maxLng - _minLng) * 780 + 10,
+    y: (1 - (lat - _minLat) / (_maxLat - _minLat)) * 360 + 10,
+  }
+}
+
+// Interpolate x/y SVG position on course for a given mile, using ROUTE_GPS
 export function interpolatePos(mile: number): { x: number; y: number } {
-  const wp = PATH_WAYPOINTS
-  if (mile <= wp[0].mile) return { x: wp[0].x, y: wp[0].y }
-  if (mile >= wp[wp.length - 1].mile) {
-    const last = wp[wp.length - 1]
-    return { x: last.x, y: last.y }
-  }
-  for (let i = 0; i < wp.length - 1; i++) {
-    if (mile >= wp[i].mile && mile <= wp[i + 1].mile) {
-      const t = (mile - wp[i].mile) / (wp[i + 1].mile - wp[i].mile)
-      return {
-        x: wp[i].x + t * (wp[i + 1].x - wp[i].x),
-        y: wp[i].y + t * (wp[i + 1].y - wp[i].y),
-      }
-    }
-  }
-  const last = wp[wp.length - 1]
-  return { x: last.x, y: last.y }
+  const n = ROUTE_GPS.length
+  const fraction = Math.min(Math.max(mile / 26.2, 0), 1)
+  const floatIndex = fraction * (n - 1)
+  const i = Math.floor(floatIndex)
+  const t = floatIndex - i
+  if (i >= n - 1) return _project(ROUTE_GPS[n - 1][0], ROUTE_GPS[n - 1][1])
+  const lat = ROUTE_GPS[i][0] + t * (ROUTE_GPS[i + 1][0] - ROUTE_GPS[i][0])
+  const lng = ROUTE_GPS[i][1] + t * (ROUTE_GPS[i + 1][1] - ROUTE_GPS[i][1])
+  return _project(lat, lng)
 }
 
 // Current mile based on wall clock vs start time

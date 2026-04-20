@@ -30,7 +30,7 @@ export default function RootLayout({
           <div className="header-inner">
             <div className="header-left">
               <img
-                  src="/tabby.jpg"
+                  src="/tabby.png"
                   alt="Tabby"
                   className="header-avatar"
                 />
