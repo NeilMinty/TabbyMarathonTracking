@@ -31,11 +31,11 @@ export default function RootLayout({
             <div className="header-left">
               <img
                   src="/tabby.png"
-                  alt="Tabby"
+                  alt=""
                   className="header-avatar"
                 />
               <div className="header-titles">
-                <h1 className="header-title">Tabby&rsquo;s Race Day Tracker</h1>
+                <h1 className="header-title">Race Day Tracker</h1>
                 <p className="header-subtitle">#TeamBreathe · Asthma + Lung UK</p>
               </div>
             </div>

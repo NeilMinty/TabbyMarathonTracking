@@ -49,8 +49,8 @@ html, body {
 }
 
 .header-avatar {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
   flex-shrink: 0;
 }

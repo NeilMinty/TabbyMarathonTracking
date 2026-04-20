@@ -115,7 +115,7 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           <text
             x={PT_CP1.x + 12}
             y={PT_CP1.y + 4}
-            fontSize="9"
+            fontSize="12"
             fill="#D6246E"
             fontWeight="bold"
           >🫁 M11</text>
@@ -125,7 +125,7 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           <text
             x={PT_CP2.x + 12}
             y={PT_CP2.y - 5}
-            fontSize="9"
+            fontSize="12"
             fill="#D6246E"
             fontWeight="bold"
           >🫁 M25</text>
@@ -143,23 +143,23 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           <text
             x={PT_FINISH.x + 25}
             y={PT_FINISH.y + 5}
-            fontSize="8"
+            fontSize="11"
             fill="white"
             textAnchor="middle"
             fontWeight="bold"
           >FINISH</text>
 
           {/* Landmark labels */}
-          <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="8" fill="#1a2535" textAnchor="end">START</text>
-          <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="8" fill="#64748b" textAnchor="end">Greenwich</text>
+          <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="11" fill="#1a2535" textAnchor="end">START</text>
+          <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="11" fill="#64748b" textAnchor="end">Greenwich</text>
 
-          <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="8" fill="#64748b" textAnchor="middle">Tower Bridge</text>
+          <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="11" fill="#64748b" textAnchor="middle">Tower Bridge</text>
 
-          <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="8" fill="#64748b" textAnchor="middle">Canary Wharf</text>
+          <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="11" fill="#64748b" textAnchor="middle">Canary Wharf</text>
 
-          <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="8" fill="#64748b" textAnchor="start">Embankment</text>
+          <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="11" fill="#64748b" textAnchor="start">Embankment</text>
 
-          <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="8" fill="#64748b" textAnchor="start">The Mall</text>
+          <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="11" fill="#64748b" textAnchor="start">The Mall</text>
 
           {/* Drop-shadow filter for avatar */}
           <defs>
@@ -171,10 +171,10 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           {/* Tabby avatar – natural Memoji shape, no border-radius */}
           <image
             href="/tabby.png"
-            x={pos.x - 24}
-            y={pos.y - 52}
-            width={48}
-            height={48}
+            x={pos.x - 32}
+            y={pos.y - 68}
+            width={64}
+            height={64}
             preserveAspectRatio="xMidYMid meet"
             filter="url(#avatar-shadow)"
           />
