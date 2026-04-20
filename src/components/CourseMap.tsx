@@ -69,125 +69,121 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
     <div className="map-section">
       <h2 className="section-title">Course Map</h2>
       <div className="map-container">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="xMidYMid meet"
-          className="course-svg"
-          aria-label="London Marathon course map"
-        >
-          {/* Background */}
-          <rect width={W} height={H} fill="#e8f2f8" rx="12" />
-
-          {/* Thames – schematic river band running east–west */}
-          <path
-            d="M 800,122 Q 640,114 480,120 Q 320,126 160,120 Q 80,117 0,119
-               L 0,158 Q 80,160 160,156 Q 320,162 480,156 Q 640,150 800,158 Z"
-            fill="#a8cbec"
-            opacity="0.55"
-          />
-
-          {/* Ghost route – full distance, low opacity */}
-          <polyline
-            points={POINTS_STR}
-            fill="none"
-            stroke="#4a90d9"
-            strokeWidth="3"
-            strokeOpacity="0.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          {/* Progress route – pink, revealed by strokeDashoffset */}
-          <polyline
-            points={POINTS_STR}
-            fill="none"
-            stroke="#D6246E"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray={TOTAL_LEN}
-            strokeDashoffset={dashOffset}
-            style={{ transition: 'stroke-dashoffset 1s ease' }}
-          />
-
-          {/* Cheer point 1 – mile 11 Rotherhithe */}
-          <circle cx={PT_CP1.x} cy={PT_CP1.y} r={8} fill="#D6246E" opacity="0.95" />
-          <text
-            x={PT_CP1.x + 12}
-            y={PT_CP1.y + 4}
-            fontSize="12"
-            fill="#D6246E"
-            fontWeight="bold"
-          >🫁 M11</text>
-
-          {/* Cheer point 2 – mile 25 Embankment */}
-          <circle cx={PT_CP2.x} cy={PT_CP2.y} r={8} fill="#D6246E" opacity="0.95" />
-          <text
-            x={PT_CP2.x + 12}
-            y={PT_CP2.y - 5}
-            fontSize="12"
-            fill="#D6246E"
-            fontWeight="bold"
-          >🫁 M25</text>
-
-          {/* Finish – The Mall */}
-          <rect
-            x={PT_FINISH.x + 4}
-            y={PT_FINISH.y - 9}
-            width={42}
-            height={18}
-            rx="3"
-            fill="#00857A"
-            opacity="0.95"
-          />
-          <text
-            x={PT_FINISH.x + 25}
-            y={PT_FINISH.y + 5}
-            fontSize="11"
-            fill="white"
-            textAnchor="middle"
-            fontWeight="bold"
-          >FINISH</text>
-
-          {/* Landmark labels */}
-          <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="11" fill="#1a2535" textAnchor="end">START</text>
-          <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="11" fill="#64748b" textAnchor="end">Greenwich</text>
-
-          <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="11" fill="#64748b" textAnchor="middle">Tower Bridge</text>
-
-          <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="11" fill="#64748b" textAnchor="middle">Canary Wharf</text>
-
-          <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="11" fill="#64748b" textAnchor="start">Embankment</text>
-
-          <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="11" fill="#64748b" textAnchor="start">The Mall</text>
-
-          {/* Drop-shadow filter for avatar */}
-          <defs>
-            <filter id="avatar-shadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.35" />
-            </filter>
-          </defs>
-
-          {/* Tabby avatar – natural Memoji shape, no border-radius */}
-          <image
-            href="/tabby.png"
-            x={pos.x - 32}
-            y={pos.y - 68}
-            width={64}
-            height={64}
+        {/* OSM tile background + SVG overlay */}
+        <div className="map-wrap">
+          <svg
+            viewBox={`0 0 ${W} ${H}`}
             preserveAspectRatio="xMidYMid meet"
-            filter="url(#avatar-shadow)"
-          />
-          <line
-            x1={pos.x}
-            y1={pos.y - 12}
-            x2={pos.x}
-            y2={pos.y}
-            stroke="#D6246E"
-            strokeWidth="1.5"
-          />
-          <circle cx={pos.x} cy={pos.y} r={3} fill="#D6246E" />
-        </svg>
+            className="course-svg"
+            aria-label="London Marathon course map"
+          >
+            <defs>
+              <filter id="avatar-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.35" />
+              </filter>
+              <filter id="label-shadow" x="-8%" y="-30%" width="116%" height="160%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#000" floodOpacity="0.85" />
+              </filter>
+            </defs>
+
+            {/* Ghost route – full distance, low opacity */}
+            <polyline
+              points={POINTS_STR}
+              fill="none"
+              stroke="#4a90d9"
+              strokeWidth="3"
+              strokeOpacity="0.15"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {/* Progress route – pink, revealed by strokeDashoffset */}
+            <polyline
+              points={POINTS_STR}
+              fill="none"
+              stroke="#D6246E"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={TOTAL_LEN}
+              strokeDashoffset={dashOffset}
+              style={{ transition: 'stroke-dashoffset 1s ease' }}
+            />
+
+            {/* Cheer point 1 – mile 11 Rotherhithe */}
+            <circle cx={PT_CP1.x} cy={PT_CP1.y} r={8} fill="#D6246E" opacity="0.95" stroke="white" strokeWidth="2" />
+            <text
+              x={PT_CP1.x + 12}
+              y={PT_CP1.y + 4}
+              fontSize="12"
+              fill="white"
+              fontWeight="bold"
+              filter="url(#label-shadow)"
+            >🫁 M11</text>
+
+            {/* Cheer point 2 – mile 25 Embankment */}
+            <circle cx={PT_CP2.x} cy={PT_CP2.y} r={8} fill="#D6246E" opacity="0.95" stroke="white" strokeWidth="2" />
+            <text
+              x={PT_CP2.x + 12}
+              y={PT_CP2.y - 5}
+              fontSize="12"
+              fill="white"
+              fontWeight="bold"
+              filter="url(#label-shadow)"
+            >🫁 M25</text>
+
+            {/* Finish – The Mall */}
+            <rect
+              x={PT_FINISH.x + 4}
+              y={PT_FINISH.y - 9}
+              width={42}
+              height={18}
+              rx="3"
+              fill="#00857A"
+              opacity="0.95"
+            />
+            <text
+              x={PT_FINISH.x + 25}
+              y={PT_FINISH.y + 5}
+              fontSize="11"
+              fill="white"
+              textAnchor="middle"
+              fontWeight="bold"
+            >FINISH</text>
+
+            {/* Landmark labels */}
+            <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="11" fill="white" fontWeight="bold" textAnchor="end" filter="url(#label-shadow)">START</text>
+            <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="11" fill="white" textAnchor="end" filter="url(#label-shadow)">Greenwich</text>
+
+            <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="11" fill="white" textAnchor="middle" filter="url(#label-shadow)">Tower Bridge</text>
+
+            <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="11" fill="white" textAnchor="middle" filter="url(#label-shadow)">Canary Wharf</text>
+
+            <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="11" fill="white" textAnchor="start" filter="url(#label-shadow)">Embankment</text>
+
+            <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="11" fill="white" textAnchor="start" filter="url(#label-shadow)">The Mall</text>
+
+            {/* Tabby avatar – natural Memoji shape, no border-radius */}
+            <image
+              href="/tabby.png"
+              x={pos.x - 32}
+              y={pos.y - 68}
+              width={64}
+              height={64}
+              preserveAspectRatio="xMidYMid meet"
+              filter="url(#avatar-shadow)"
+            />
+            <line
+              x1={pos.x}
+              y1={pos.y - 12}
+              x2={pos.x}
+              y2={pos.y}
+              stroke="#D6246E"
+              strokeWidth="1.5"
+            />
+            <circle cx={pos.x} cy={pos.y} r={3} fill="#D6246E" />
+          </svg>
+        </div>
 
         <div className="map-legend">
           <span className="legend-item"><span className="legend-dot legend-dot--pink" /> Cheer point</span>
