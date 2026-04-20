@@ -35,10 +35,12 @@ const TOTAL_LEN = PROJECTED.reduce((sum, p, i) => {
 }, 0)
 
 // Named landmark positions
-const PT_START  = PROJECTED[0]
-const PT_CP1    = PROJECTED[12]   // mile 11 – Rotherhithe
-const PT_CP2    = PROJECTED[30]   // mile 25 – Embankment
-const PT_FINISH = PROJECTED[33]   // The Mall
+const PT_START        = PROJECTED[0]
+const PT_TOWER_BRIDGE = PROJECTED[13]  // mile 12 – Tower Bridge
+const PT_CANARY_WHARF = PROJECTED[26]  // mile 18 – Canary Wharf
+const PT_CP1          = PROJECTED[12]  // mile 11 – Rotherhithe
+const PT_CP2          = PROJECTED[30]  // mile 25 – Embankment
+const PT_FINISH       = PROJECTED[33]  // The Mall
 
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -76,6 +78,14 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           {/* Background */}
           <rect width={W} height={H} fill="#e8f2f8" rx="12" />
 
+          {/* Thames – schematic river band running east–west */}
+          <path
+            d="M 800,122 Q 640,114 480,120 Q 320,126 160,120 Q 80,117 0,119
+               L 0,158 Q 80,160 160,156 Q 320,162 480,156 Q 640,150 800,158 Z"
+            fill="#a8cbec"
+            opacity="0.55"
+          />
+
           {/* Ghost route – full distance, low opacity */}
           <polyline
             points={POINTS_STR}
@@ -92,7 +102,7 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             points={POINTS_STR}
             fill="none"
             stroke="#D6246E"
-            strokeWidth="3.5"
+            strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeDasharray={TOTAL_LEN}
@@ -101,9 +111,9 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           />
 
           {/* Cheer point 1 – mile 11 Rotherhithe */}
-          <circle cx={PT_CP1.x} cy={PT_CP1.y} r={7} fill="#D6246E" opacity="0.95" />
+          <circle cx={PT_CP1.x} cy={PT_CP1.y} r={8} fill="#D6246E" opacity="0.95" />
           <text
-            x={PT_CP1.x + 11}
+            x={PT_CP1.x + 12}
             y={PT_CP1.y + 4}
             fontSize="9"
             fill="#D6246E"
@@ -111,10 +121,10 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           >🫁 M11</text>
 
           {/* Cheer point 2 – mile 25 Embankment */}
-          <circle cx={PT_CP2.x} cy={PT_CP2.y} r={7} fill="#D6246E" opacity="0.95" />
+          <circle cx={PT_CP2.x} cy={PT_CP2.y} r={8} fill="#D6246E" opacity="0.95" />
           <text
-            x={PT_CP2.x + 11}
-            y={PT_CP2.y - 4}
+            x={PT_CP2.x + 12}
+            y={PT_CP2.y - 5}
             fontSize="9"
             fill="#D6246E"
             fontWeight="bold"
@@ -139,14 +149,17 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             fontWeight="bold"
           >FINISH</text>
 
-          {/* Start label */}
-          <text
-            x={PT_START.x}
-            y={PT_START.y - 12}
-            fontSize="8"
-            fill="#1a2535"
-            textAnchor="middle"
-          >START</text>
+          {/* Landmark labels */}
+          <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="8" fill="#1a2535" textAnchor="end">START</text>
+          <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="8" fill="#64748b" textAnchor="end">Greenwich</text>
+
+          <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="8" fill="#64748b" textAnchor="middle">Tower Bridge</text>
+
+          <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="8" fill="#64748b" textAnchor="middle">Canary Wharf</text>
+
+          <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="8" fill="#64748b" textAnchor="start">Embankment</text>
+
+          <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="8" fill="#64748b" textAnchor="start">The Mall</text>
 
           {/* Drop-shadow filter for avatar */}
           <defs>
@@ -158,10 +171,10 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
           {/* Tabby avatar – natural Memoji shape, no border-radius */}
           <image
             href="/tabby.png"
-            x={pos.x - 16}
-            y={pos.y - 44}
-            width={32}
-            height={32}
+            x={pos.x - 24}
+            y={pos.y - 52}
+            width={48}
+            height={48}
             preserveAspectRatio="xMidYMid meet"
             filter="url(#avatar-shadow)"
           />
