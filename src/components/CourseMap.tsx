@@ -91,17 +91,18 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             <rect width={W} height={H} fill="#e8e8e8" />
 
             {/* Borough area blocks */}
-            <rect x={490} y={190} width={310} height={190} rx="5" fill="#d6d6d6" />
-            <rect x={310} y={160} width={230} height={145} rx="5" fill="#d6d6d6" />
-            <rect x={430} y={60}  width={250} height={130} rx="5" fill="#d6d6d6" />
-            <rect x={155} y={20}  width={310} height={150} rx="5" fill="#d6d6d6" />
-            <rect x={10}  y={35}  width={240} height={140} rx="5" fill="#d6d6d6" />
+            <rect x={490} y={190} width={310} height={190} rx="5" fill="#f0f0f0" opacity="0.4" />
+            <rect x={310} y={160} width={230} height={145} rx="5" fill="#f0f0f0" opacity="0.4" />
+            <rect x={430} y={60}  width={250} height={130} rx="5" fill="#f0f0f0" opacity="0.4" />
+            <rect x={155} y={20}  width={310} height={150} rx="5" fill="#f0f0f0" opacity="0.4" />
+            <rect x={10}  y={35}  width={240} height={140} rx="5" fill="#f0f0f0" opacity="0.4" />
 
-            {/* Thames – dark grey river band */}
+            {/* Thames – water band */}
             <path
-              d="M 0,126 Q 200,120 400,128 Q 600,136 800,128
-                 L 800,163 Q 600,170 400,162 Q 200,154 0,160 Z"
-              fill="#9baab6"
+              d="M 0,130 Q 200,126 400,131 Q 600,136 800,131
+                 L 800,148 Q 600,153 400,148 Q 200,143 0,147 Z"
+              fill="#a8c8e8"
+              opacity="0.6"
             />
 
             {/* Ghost route – full distance, low opacity */}
@@ -115,12 +116,24 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
               strokeLinejoin="round"
             />
 
-            {/* Progress route – pink, revealed by strokeDashoffset */}
+            {/* Progress route – white halo underneath for contrast */}
+            <polyline
+              points={POINTS_STR}
+              fill="none"
+              stroke="white"
+              strokeWidth="10"
+              strokeOpacity="0.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={TOTAL_LEN}
+              strokeDashoffset={dashOffset}
+            />
+            {/* Progress route – pink on top */}
             <polyline
               points={POINTS_STR}
               fill="none"
               stroke="#D6246E"
-              strokeWidth="5"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeDasharray={TOTAL_LEN}
@@ -170,8 +183,8 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             >FINISH</text>
 
             {/* Landmark labels */}
-            <text x={PT_START.x - 4} y={PT_START.y - 12} fontSize="11" fill="white" fontWeight="bold" textAnchor="end" filter="url(#label-shadow)">START</text>
-            <text x={PT_START.x - 4} y={PT_START.y + 2}  fontSize="11" fill="white" textAnchor="end" filter="url(#label-shadow)">Greenwich</text>
+            <text x={PT_START.x - 4} y={PT_START.y - 72} fontSize="11" fill="white" fontWeight="bold" textAnchor="end" filter="url(#label-shadow)">START</text>
+            <text x={PT_START.x - 4} y={PT_START.y + 14} fontSize="11" fill="white" textAnchor="end" filter="url(#label-shadow)">Greenwich</text>
 
             <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="11" fill="white" textAnchor="middle" filter="url(#label-shadow)">Tower Bridge</text>
 
