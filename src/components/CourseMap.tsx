@@ -86,6 +86,24 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
               </filter>
             </defs>
 
+            {/* ── Minimal map background ── */}
+            {/* Light grey base */}
+            <rect width={W} height={H} fill="#e8e8e8" />
+
+            {/* Borough area blocks */}
+            <rect x={490} y={190} width={310} height={190} rx="5" fill="#d6d6d6" />
+            <rect x={310} y={160} width={230} height={145} rx="5" fill="#d6d6d6" />
+            <rect x={430} y={60}  width={250} height={130} rx="5" fill="#d6d6d6" />
+            <rect x={155} y={20}  width={310} height={150} rx="5" fill="#d6d6d6" />
+            <rect x={10}  y={35}  width={240} height={140} rx="5" fill="#d6d6d6" />
+
+            {/* Thames – dark grey river band */}
+            <path
+              d="M 0,126 Q 200,120 400,128 Q 600,136 800,128
+                 L 800,163 Q 600,170 400,162 Q 200,154 0,160 Z"
+              fill="#9baab6"
+            />
+
             {/* Ghost route – full distance, low opacity */}
             <polyline
               points={POINTS_STR}

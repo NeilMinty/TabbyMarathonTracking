@@ -643,15 +643,12 @@ html, body {
   font-style: italic;
 }
 
-/* ── OSM tile map background ── */
+/* ── Map wrap ── */
 .map-wrap {
   position: relative;
   border-radius: 10px;
   overflow: hidden;
-  background-image: url('https://maps.wikimedia.org/img/osm-intl,12,51.494,-0.068,800x380.png');
-  background-size: cover;
-  background-position: center;
-  background-color: #a8d4f5;
+  background-color: #e8e8e8;
 }
 
 .map-wrap .course-svg {
