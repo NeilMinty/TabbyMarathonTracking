@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { DM_Serif_Display, DM_Sans } from 'next/font/google'
 import './globals.css'
-import { TABBY_B64 } from '@/lib/tabbyAvatar'
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: '400',
@@ -30,15 +29,11 @@ export default function RootLayout({
         <header className="site-header">
           <div className="header-inner">
             <div className="header-left">
-              {TABBY_B64 ? (
-                <img
-                  src={`data:image/png;base64,${TABBY_B64}`}
+              <img
+                  src="/tabby.jpg"
                   alt="Tabby"
                   className="header-avatar"
                 />
-              ) : (
-                <div className="header-avatar header-avatar--placeholder">T</div>
-              )}
               <div className="header-titles">
                 <h1 className="header-title">Tabby&rsquo;s Race Day Tracker</h1>
                 <p className="header-subtitle">#TeamBreathe · Asthma + Lung UK</p>

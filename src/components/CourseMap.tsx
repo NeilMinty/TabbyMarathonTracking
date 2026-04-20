@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { TABBY_B64 } from '@/lib/tabbyAvatar'
 import { PATH_WAYPOINTS } from '@/lib/routeData'
 import { getCurrentMile, interpolatePos } from '@/lib/utils'
 
@@ -130,33 +129,22 @@ export default function CourseMap({ startTime, targetHours }: Props) {
           <text x={PATH_WAYPOINTS[0].x * W} y={PATH_WAYPOINTS[0].y * H - 10} fontSize="8" fill="#1a2535" textAnchor="middle">START</text>
 
           {/* Tabby avatar */}
-          {TABBY_B64 ? (
-            <>
-              <defs>
-                <filter id="avatar-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.3" />
-                </filter>
-              </defs>
-              <image
-                href={`data:image/png;base64,${TABBY_B64}`}
-                x={px - 16}
-                y={py - 40}
-                width={32}
-                height={32}
-                preserveAspectRatio="xMidYMid meet"
-                filter="url(#avatar-shadow)"
-              />
-              <line x1={px} y1={py - 8} x2={px} y2={py} stroke="#D6246E" strokeWidth="1.5" />
-              <circle cx={px} cy={py} r={3} fill="#D6246E" />
-            </>
-          ) : (
-            <>
-              <circle cx={px} cy={py - 24} r={12} fill="#D6246E" opacity="0.85" />
-              <text x={px} y={py - 20} fontSize="10" textAnchor="middle" fill="white">T</text>
-              <line x1={px} y1={py - 12} x2={px} y2={py} stroke="#D6246E" strokeWidth="1.5" />
-              <circle cx={px} cy={py} r={3} fill="#D6246E" />
-            </>
-          )}
+          <defs>
+            <filter id="avatar-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.3" />
+            </filter>
+          </defs>
+          <image
+            href="/tabby.jpg"
+            x={px - 16}
+            y={py - 40}
+            width={32}
+            height={32}
+            preserveAspectRatio="xMidYMid meet"
+            filter="url(#avatar-shadow)"
+          />
+          <line x1={px} y1={py - 8} x2={px} y2={py} stroke="#D6246E" strokeWidth="1.5" />
+          <circle cx={px} cy={py} r={3} fill="#D6246E" />
         </svg>
 
         <div className="map-legend">
