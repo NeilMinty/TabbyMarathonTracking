@@ -137,6 +137,60 @@ html, body {
   }
 }
 
+@media (max-width: 480px) {
+  .header-avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .header-title {
+    font-size: 1rem;
+  }
+
+  .header-inner {
+    padding: 10px 12px;
+  }
+
+  .main {
+    padding: 14px 12px 40px;
+  }
+
+  .map-section,
+  .cheer-section,
+  .timeline-section {
+    padding: 14px 12px;
+  }
+
+  .card,
+  .config-card,
+  .weather-card,
+  .countdown-card {
+    padding: 14px 12px;
+  }
+
+  .summary-bar {
+    padding: 14px 12px;
+  }
+
+  .summary-value {
+    font-size: 1.15rem;
+  }
+
+  .countdown-num {
+    font-size: 1.6rem;
+    min-width: 2ch;
+  }
+
+  .countdown-sep {
+    font-size: 1.4rem;
+  }
+
+  .btn-start-race {
+    font-size: 1.05rem;
+    padding: 14px 16px;
+  }
+}
+
 .config-label {
   display: flex;
   flex-direction: column;
