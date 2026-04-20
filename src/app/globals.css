@@ -135,6 +135,10 @@ html, body {
   .config-grid {
     grid-template-columns: 1fr;
   }
+
+  .config-label {
+    align-items: center;
+  }
 }
 
 @media (max-width: 480px) {
