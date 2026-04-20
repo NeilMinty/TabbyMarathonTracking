@@ -81,8 +81,8 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
               <filter id="avatar-shadow" x="-30%" y="-30%" width="160%" height="160%">
                 <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.35" />
               </filter>
-              <filter id="label-shadow" x="-8%" y="-30%" width="116%" height="160%">
-                <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#000" floodOpacity="0.85" />
+              <filter id="labelShadow">
+                <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="white" floodOpacity="0.9"/>
               </filter>
             </defs>
 
@@ -146,10 +146,10 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             <text
               x={PT_CP1.x + 12}
               y={PT_CP1.y + 4}
-              fontSize="12"
-              fill="white"
+              fontSize="14"
+              fill="#1a2535"
               fontWeight="bold"
-              filter="url(#label-shadow)"
+              filter="url(#labelShadow)"
             >🫁 M11</text>
 
             {/* Cheer point 2 – mile 25 Embankment */}
@@ -157,10 +157,10 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             <text
               x={PT_CP2.x + 12}
               y={PT_CP2.y - 5}
-              fontSize="12"
-              fill="white"
+              fontSize="14"
+              fill="#1a2535"
               fontWeight="bold"
-              filter="url(#label-shadow)"
+              filter="url(#labelShadow)"
             >🫁 M25</text>
 
             {/* Finish – The Mall */}
@@ -176,23 +176,24 @@ export default function CourseMap({ startTime, targetHours, isRaceStarted = fals
             <text
               x={PT_FINISH.x + 25}
               y={PT_FINISH.y + 5}
-              fontSize="11"
-              fill="white"
+              fontSize="13"
+              fill="#1a2535"
               textAnchor="middle"
-              fontWeight="bold"
+              fontWeight="700"
+              filter="url(#labelShadow)"
             >FINISH</text>
 
             {/* Landmark labels */}
-            <text x={PT_START.x - 4} y={PT_START.y - 72} fontSize="11" fill="white" fontWeight="bold" textAnchor="end" filter="url(#label-shadow)">START</text>
-            <text x={PT_START.x - 4} y={PT_START.y + 14} fontSize="11" fill="white" textAnchor="end" filter="url(#label-shadow)">Greenwich</text>
+            <text x={PT_START.x - 4} y={PT_START.y - 72} fontSize="13" fill="#1a2535" fontWeight="700" textAnchor="end" filter="url(#labelShadow)">START</text>
+            <text x={PT_START.x - 4} y={PT_START.y + 14} fontSize="13" fill="#1a2535" textAnchor="end" filter="url(#labelShadow)">Greenwich</text>
 
-            <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="11" fill="white" textAnchor="middle" filter="url(#label-shadow)">Tower Bridge</text>
+            <text x={PT_TOWER_BRIDGE.x} y={PT_TOWER_BRIDGE.y + 18} fontSize="13" fill="#1a2535" textAnchor="middle" filter="url(#labelShadow)">Tower Bridge</text>
 
-            <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="11" fill="white" textAnchor="middle" filter="url(#label-shadow)">Canary Wharf</text>
+            <text x={PT_CANARY_WHARF.x} y={PT_CANARY_WHARF.y - 10} fontSize="13" fill="#1a2535" textAnchor="middle" filter="url(#labelShadow)">Canary Wharf</text>
 
-            <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="11" fill="white" textAnchor="start" filter="url(#label-shadow)">Embankment</text>
+            <text x={PT_CP2.x + 12} y={PT_CP2.y + 10} fontSize="13" fill="#1a2535" textAnchor="start" filter="url(#labelShadow)">Embankment</text>
 
-            <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="11" fill="white" textAnchor="start" filter="url(#label-shadow)">The Mall</text>
+            <text x={PT_FINISH.x + 4} y={PT_FINISH.y + 18} fontSize="13" fill="#1a2535" textAnchor="start" filter="url(#labelShadow)">The Mall</text>
 
             {/* Tabby avatar – natural Memoji shape, no border-radius */}
             <image
