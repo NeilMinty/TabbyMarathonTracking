@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { MILESTONES } from '@/lib/routeData'
 import { addMinsToTime, fmtPace } from '@/lib/utils'
 
-const TARGET_OPTIONS = [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]
+const TARGET_OPTIONS = [2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]
 
 function fmtTarget(h: number): string {
   const hrs = Math.floor(h)
@@ -61,6 +61,20 @@ function PdfDownloadButton({ rows, startTime, targetHours }: PdfProps) {
   return <PdfLink rows={rows} startTime={startTime} targetHours={targetHours} />
 }
 
+const calcBtnStyle: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  background: '#D6246E',
+  color: 'white',
+  border: 'none',
+  borderRadius: 10,
+  padding: '14px 32px',
+  fontSize: '1rem',
+  fontWeight: 700,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+}
+
 const btnStyle: React.CSSProperties = {
   display: 'inline-block',
   background: '#D6246E',
@@ -76,12 +90,20 @@ const btnStyle: React.CSSProperties = {
 }
 
 export default function PlannerPage() {
-  const [startTime, setStartTime] = useState('10:30')
-  const [targetHours, setTargetHours] = useState(6)
+  const [inputStartTime, setInputStartTime] = useState('10:30')
+  const [inputTargetHours, setInputTargetHours] = useState(6)
+  const [startTime, setStartTime] = useState<string | null>(null)
+  const [targetHours, setTargetHours] = useState<number | null>(null)
 
-  const minPerMile = (targetHours * 60) / 26.2
-  const pace = fmtPace(minPerMile)
-  const rows = buildRows(startTime, targetHours)
+  function handleCalculate() {
+    setStartTime(inputStartTime)
+    setTargetHours(inputTargetHours)
+  }
+
+  const calculated = startTime !== null && targetHours !== null
+  const minPerMile = calculated ? (targetHours! * 60) / 26.2 : null
+  const pace = minPerMile !== null ? fmtPace(minPerMile) : null
+  const rows = calculated ? buildRows(startTime!, targetHours!) : []
 
   return (
     <main style={{ minHeight: '100vh', background: '#f4f6fa', padding: '32px 16px 64px', fontFamily: 'var(--font-sans, DM Sans, sans-serif)' }}>
@@ -101,21 +123,21 @@ export default function PlannerPage() {
         </div>
 
         {/* Inputs */}
-        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 24, display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 16, display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-end' }}>
           <label style={labelStyle}>
             Start Time
             <input
               type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+              value={inputStartTime}
+              onChange={(e) => setInputStartTime(e.target.value)}
               style={inputStyle}
             />
           </label>
           <label style={labelStyle}>
             Target Finish
             <select
-              value={targetHours}
-              onChange={(e) => setTargetHours(Number(e.target.value))}
+              value={inputTargetHours}
+              onChange={(e) => setInputTargetHours(Number(e.target.value))}
               style={inputStyle}
             >
               {TARGET_OPTIONS.map((h) => (
@@ -123,44 +145,60 @@ export default function PlannerPage() {
               ))}
             </select>
           </label>
-          <div style={{ fontSize: '0.85rem', color: '#64748b', paddingBottom: 8 }}>
-            Pace: <strong style={{ color: '#1a2535' }}>{pace}/mile</strong>
+          {pace && (
+            <div style={{ fontSize: '0.85rem', color: '#64748b', paddingBottom: 8 }}>
+              Pace: <strong style={{ color: '#1a2535' }}>{pace}/mile</strong>
+            </div>
+          )}
+        </div>
+
+        {/* Calculate button */}
+        <div style={{ marginBottom: 24 }}>
+          <button onClick={handleCalculate} style={calcBtnStyle}>
+            Calculate
+          </button>
+        </div>
+
+        {/* Results */}
+        {!calculated ? (
+          <div style={{ background: 'white', borderRadius: 16, border: '1px solid #e2e8f0', padding: '40px 24px', textAlign: 'center', color: '#94a3b8', fontSize: '0.95rem' }}>
+            Enter your start time and target finish time, then click Calculate
           </div>
-        </div>
-
-        {/* Results table */}
-        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', marginBottom: 24 }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
-            <thead>
-              <tr style={{ background: '#1a2535', color: 'white' }}>
-                <th style={thStyle}>Mile</th>
-                <th style={{ ...thStyle, textAlign: 'left' }}>Landmark</th>
-                <th style={{ ...thStyle, textAlign: 'left' }}>Area</th>
-                <th style={thStyle}>Est. Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => {
-                const bg = row.isFinish ? '#e6f5f4' : row.isCheer ? '#fff0f6' : 'white'
-                const fw = row.isFinish || row.isCheer ? 700 : 400
-                const color = row.isFinish ? '#00857A' : row.isCheer ? '#D6246E' : '#1a2535'
-                return (
-                  <tr key={row.mile} style={{ background: bg, borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ ...tdStyle, textAlign: 'center', fontWeight: fw, color }}>{row.mile}</td>
-                    <td style={{ ...tdStyle, fontWeight: fw, color }}>{row.name}</td>
-                    <td style={{ ...tdStyle, color: '#64748b' }}>{row.area}</td>
-                    <td style={{ ...tdStyle, textAlign: 'center', fontWeight: 700, color, fontFamily: 'var(--font-serif, DM Serif Display, serif)', fontSize: '1rem' }}>{row.time}</td>
+        ) : (
+          <>
+            <div style={{ background: 'white', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', marginBottom: 24 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ background: '#1a2535', color: 'white' }}>
+                    <th style={thStyle}>Mile</th>
+                    <th style={{ ...thStyle, textAlign: 'left' }}>Landmark</th>
+                    <th style={{ ...thStyle, textAlign: 'left' }}>Area</th>
+                    <th style={thStyle}>Est. Time</th>
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {rows.map((row) => {
+                    const bg = row.isFinish ? '#e6f5f4' : row.isCheer ? '#fff0f6' : 'white'
+                    const fw = row.isFinish || row.isCheer ? 700 : 400
+                    const color = row.isFinish ? '#00857A' : row.isCheer ? '#D6246E' : '#1a2535'
+                    return (
+                      <tr key={row.mile} style={{ background: bg, borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ ...tdStyle, textAlign: 'center', fontWeight: fw, color }}>{row.mile}</td>
+                        <td style={{ ...tdStyle, fontWeight: fw, color }}>{row.name}</td>
+                        <td style={{ ...tdStyle, color: '#64748b' }}>{row.area}</td>
+                        <td style={{ ...tdStyle, textAlign: 'center', fontWeight: 700, color, fontFamily: 'var(--font-serif, DM Serif Display, serif)', fontSize: '1rem' }}>{row.time}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
 
-        {/* Download button */}
-        <div style={{ textAlign: 'center' }}>
-          <PdfDownloadButton rows={rows} startTime={startTime} targetHours={targetHours} />
-        </div>
+            <div style={{ textAlign: 'center' }}>
+              <PdfDownloadButton rows={rows} startTime={startTime!} targetHours={targetHours!} />
+            </div>
+          </>
+        )}
       </div>
     </main>
   )
