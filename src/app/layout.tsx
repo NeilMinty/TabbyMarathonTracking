@@ -25,27 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
-      <body>
-        <header className="site-header">
-          <div className="header-inner">
-            <div className="header-left">
-              <img
-                  src="/tabby.png"
-                  alt=""
-                  className="header-avatar"
-                />
-              <div className="header-titles">
-                <h1 className="header-title">Race Day Tracker</h1>
-                <p className="header-subtitle">#TeamBreathe · Asthma + Lung UK</p>
-              </div>
-            </div>
-            <div className="header-date">
-              <span className="date-badge">26 April 2026</span>
-            </div>
-          </div>
-        </header>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
